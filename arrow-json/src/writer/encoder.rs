@@ -115,6 +115,11 @@ fn make_encoder_impl<'a>(
             };
             (Box::new(encoder) as _, array.nulls().cloned())
         }
+        DataType::Decimal128(_, _) => {
+            let options = FormatOptions::new().with_display_error(true);
+            let formatter = ArrayFormatter::try_new(array, &options)?;
+            (Box::new(formatter) as _, array.nulls().cloned())
+        }
         d => match d.is_temporal() {
             true => {
                 // Note: the implementation of Encoder for ArrayFormatter assumes it does not produce

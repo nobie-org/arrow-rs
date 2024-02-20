@@ -1556,6 +1556,9 @@ mod tests {
     }
 
     #[test]
+    fn write_decimals() {}
+
+    #[test]
     fn write_basic_rows() {
         test_write_for_file("test/data/basic.json", true);
     }
@@ -1591,7 +1594,7 @@ mod tests {
         writer.finish().unwrap();
         assert_eq!(
             String::from_utf8(writer.into_inner()).unwrap(),
-            r#"[{"an":"object"}]"#
+            r#"[{"an":"object"}]"#,
         );
     }
 
