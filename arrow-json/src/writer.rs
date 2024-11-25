@@ -862,6 +862,57 @@ mod tests {
     }
 
     #[test]
+    fn write_decimals() {
+        let schema = Schema::new(vec![
+            Field::new("c1", DataType::Decimal128(5, 2), true),
+            // 38 is the max precision for decimal128
+            Field::new("c2", DataType::Decimal128(38, -128), true),
+            Field::new("c3", DataType::Decimal128(38, 38), true),
+        ]);
+
+        fn decimal128_array_from_vec(
+            array: &[Option<i128>],
+            precision: u8,
+            scale: i8,
+        ) -> Decimal128Array {
+            array
+                .iter()
+                .copied()
+                .collect::<Decimal128Array>()
+                .with_precision_and_scale(precision, scale)
+                .unwrap()
+        }
+
+        let a = decimal128_array_from_vec(&[Some(12345), None, Some(123), Some(345)], 5, 2);
+
+        let b = decimal128_array_from_vec(
+            &[
+                Some(1444289042302904320),
+                Some(903298420),
+                None,
+                Some(90329042),
+            ],
+            38,
+            -128,
+        );
+
+        let c = decimal128_array_from_vec(&[Some(1), Some(2), Some(3), None], 38, 38);
+
+        let batch = RecordBatch::try_new(
+            Arc::new(schema),
+            vec![Arc::new(a), Arc::new(b), Arc::new(c)],
+        )
+        .unwrap();
+
+        let mut buf = Vec::new();
+        {
+            let mut writer = LineDelimitedWriter::new(&mut buf);
+            writer.write_batches(&[&batch]).unwrap();
+        }
+        println!("{}", std::str::from_utf8(&buf).unwrap());
+    }
+
+    #[test]
     fn write_nested_structs() {
         let schema = Schema::new(vec![
             Field::new(

@@ -34,11 +34,19 @@ path = "src/lib.rs"
 bench = false
 
 [dependencies]
-arrow-array = { workspace = true }
-arrow-buffer = { workspace = true }
-arrow-cast = { workspace = true }
-arrow-data = { workspace = true }
-arrow-schema = { workspace = true }
+# arrow-array = { workspace = true }
+# arrow-buffer = { workspace = true }
+# arrow-cast = { workspace = true }
+# arrow-data = { workspace = true }
+# arrow-schema = { workspace = true }
+
+arrow-array = "53.1"
+arrow-buffer = "53.1"
+arrow-cast = "53.1"
+arrow-data = "53.1"
+arrow-schema = "53.1"
+
+
 half = { version = "2.1", default-features = false }
 indexmap = { version = "2.0", default-features = false, features = ["std"] }
 num = { version = "0.4", default-features = false, features = ["std"] }
